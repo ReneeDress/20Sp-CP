@@ -54,9 +54,11 @@ char getToken() {
                 }
             }
         }
+    } else if (inchar == ' ') {
+        inchar = getToken();
     } else if (inchar == '\n') {
         return inchar;
-    } else if (inchar != ';' && inchar != 's' && inchar != 'd' && inchar != '\t') {
+    } else if (inchar != ';' && inchar != 's' && inchar != 'd') {
         cout << "[error@";
         cout << stringsub;
         cout << "] Illegal incoming char '";
@@ -88,14 +90,11 @@ void MatchToken(char expected) {
 
 // ParseP
 void ParseP() {
-    cout << "P -> begin   D   S   end" << endl;
+    cout << "P -> begin D S end" << endl;
     if (lookahead == 'B') {             // begin
         MatchToken('B');       // begin
-        MatchToken('\t');
         ParseD();
-        MatchToken('\t');
         ParseS();
-        MatchToken('\t');
 //        cout << "lookahead>" << lookahead << "<end" << endl;
         if (lookahead == 'E') {         // end
 //            cout << "lookahead>" << lookahead << "<end" << endl;
@@ -126,22 +125,14 @@ void ParseP() {
 
 // ParseD
 void ParseD() {
-    cout << "D ->   dD'" << endl;
-    if (lookahead == '\t') {
-        MatchToken('\t');
-        if (lookahead == 'd') {
-            MatchToken('d');
-            ParseDhi();
-        } else {
-            cout << "[error@";
-            cout << stringsub;
-            cout << "] Detected '   ', the coming phase should be 'd'." << endl;
-            exit(0);
-        }
+    cout << "D -> dD'" << endl;
+    if (lookahead == 'd') {
+        MatchToken('d');
+        ParseDhi();
     } else {
         cout << "[error@";
         cout << stringsub;
-        cout << "] For D, the coming phase should be '  '." << endl;
+        cout << "] For D, the coming phase should be 'd'." << endl;
         exit(0);
     }
 }
@@ -150,20 +141,12 @@ void ParseD() {
 void ParseDhi() {
     switch(lookahead) {
         case ';': {
-            cout << "D' -> ;d   D'" << endl;
+            cout << "D' -> ;dD'" << endl;
             if (lookahead == ';') {
                 MatchToken(';');
                 if (lookahead == 'd') {
                     MatchToken('d');
-                    if (lookahead == '\t') {
-                        MatchToken('\t');
-                        ParseDhi();
-                    } else {
-                        cout << "[error@";
-                        cout << stringsub;
-                        cout << "] Detected ';d', the coming phase should be '  '." << endl;
-                        exit(0);
-                    }
+                    ParseDhi();
                 } else {
                     cout << "[error@";
                     cout << stringsub;
@@ -178,35 +161,25 @@ void ParseDhi() {
             }
             break;
         }
-        case '\t':
+        case 's':
             cout << "D' -> epsilon" << endl;
             break;
         default:
             cout << "[error@";
             cout << stringsub;
-            cout << "] For D', the coming phase should be ';' or '  '." << endl;
+            cout << "] For D', the coming phase should be ';' or 'd'." << endl;
             exit(0);
     }
 }
 
 // ParseS
 void ParseS() {
-    cout << "S ->   sS'" << endl;
-    if (lookahead == '\t') {
-        MatchToken('\t');
-        if (lookahead == 's') {
-            MatchToken('s');
-            ParseShi();
-        } else {
-            cout << "[error@";
-            cout << stringsub;
-            cout << "] Detected '   ', the coming phase should be 's'." << endl;
-            exit(0);
-        }
+    cout << "S -> sS'" << endl;
+    if (lookahead == 's') {
+        MatchToken('s');
+        ParseShi();
     } else {
-        cout << "[error@";
-        cout << stringsub;
-        cout << "] For S, the coming phase should be '  '." << endl;
+        cout << "error S" << endl;
         exit(0);
     }
 }
@@ -215,20 +188,12 @@ void ParseS() {
 void ParseShi() {
     switch(lookahead) {
         case ';': {
-            cout << "S' -> ;s   S'" << endl;
+            cout << "S' -> ;sS'" << endl;
             if (lookahead == ';') {
                 MatchToken(';');
                 if (lookahead == 's') {
                     MatchToken('s');
-                    if (lookahead == '\t') {
-                        MatchToken('\t');
-                        ParseShi();
-                    } else {
-                        cout << "[error@";
-                        cout << stringsub;
-                        cout << "] Detected ';s', the coming phase should be '  '." << endl;
-                        exit(0);
-                    }
+                    ParseShi();
                 } else {
                     cout << "[error@";
                     cout << stringsub;
@@ -243,14 +208,13 @@ void ParseShi() {
             }
             break;
         }
-        case '\t': {
+        case 'E':
             cout << "S' -> epsilon" << endl;
             break;
-        }
         default:
             cout << "[error@";
             cout << stringsub;
-            cout << "] For S', the coming phase should be ';' or '  '." << endl;
+            cout << "] For S', the coming phase should be ';' or 'end'." << endl;
             exit(0);
     }
 //    cout << "end of shi" << endl;

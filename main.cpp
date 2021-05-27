@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 char lookahead;
@@ -25,9 +26,7 @@ char getToken() {
             inchar = getchar();
             stringsub += 1;
             if (inchar != sbegin[i]) {
-                cout << "[error@";
-                cout << stringsub;
-                cout << "] Do you mean 'begin'? Plz correct the misspelling." << endl;
+                cout << "[error@" + to_string(stringsub) + "] Do you mean 'begin'? Plz correct the misspelling." << endl;
                 exit(0);
             } else {
                 if (i == 4) {
@@ -42,9 +41,7 @@ char getToken() {
         for (int i = 1; i < 3; i++) {
             inchar = getchar();
             if (inchar != send[i]) {
-                cout << "[error@";
-                cout << stringsub;
-                cout << "] Do you mean 'end'? Plz correct the misspelling." << endl;
+                cout << "[error@" + to_string(stringsub) + "] Do you mean 'end'? Plz correct the misspelling." << endl;
                 exit(0);
             } else {
                 if (i == 2) {
@@ -54,12 +51,8 @@ char getToken() {
                 }
             }
         }
-    } else if (inchar == '\n') {
-        return inchar;
-    } else if (inchar != ';' && inchar != 's' && inchar != 'd' && inchar != '\t') {
-        cout << "[error@";
-        cout << stringsub;
-        cout << "] Illegal incoming char '";
+    } else if (inchar != ';' && inchar != 's' && inchar != 'd' && inchar != '\t' && inchar != '\n') {
+        cout << "[error@" + to_string(stringsub) + "] Illegal incoming char '";
         cout << inchar;
         cout << "'. Plz check your sentence." << endl;
         exit(0);
@@ -72,9 +65,7 @@ void MatchToken(char expected) {
 //    cout << "lookahead>" << lookahead << "<end" << endl;
 //    cout << "expected>" << expected << "<end" << endl;
     if (lookahead != expected) {
-        cout << "[error@";
-        cout << stringsub;
-        cout << "] Illegal coming phase'." << endl;
+        cout << "[error@" + to_string(stringsub) + "] Illegal coming phase'." << endl;
         exit(0);
     } else {
 //        cout << "lookahead>" << lookahead << "<end" << endl;
@@ -82,7 +73,6 @@ void MatchToken(char expected) {
 //        cout << "accept" << endl;
         lookahead = getToken();
     }
-    return;
 }
 
 
@@ -96,31 +86,21 @@ void ParseP() {
         MatchToken('\t');
         ParseS();
         MatchToken('\t');
-//        cout << "lookahead>" << lookahead << "<end" << endl;
         if (lookahead == 'E') {         // end
-//            cout << "lookahead>" << lookahead << "<end" << endl;
             MatchToken('E');   // end
         } else {
-            cout << "[error@";
-            cout << stringsub;
-            cout << "] The coming phase should be 'end'." << endl;
+            cout << "[error@" + to_string(stringsub) + "] The coming phase should be 'end'." << endl;
             exit(0);
         }
     } else {
-        cout << "[error@";
-        cout << stringsub;
-        cout << "] The coming phase should be 'begin'." << endl;
+        cout << "[error@" + to_string(stringsub) + "] The coming phase should be 'begin'." << endl;
         exit(0);
     }
     if (lookahead == '\n') {
-//        cout << lookahead << endl;
         cout << "[Result] Accepted sentence." << endl;
     }
     else {
-//        cout << lookahead << endl;
-        cout << "[error@";
-        cout << stringsub;
-        cout << "] Illegal sentence end." << endl;
+        cout << "[error@" + to_string(stringsub) + "] Illegal sentence end." << endl;
     }
 }
 
@@ -133,15 +113,11 @@ void ParseD() {
             MatchToken('d');
             ParseDhi();
         } else {
-            cout << "[error@";
-            cout << stringsub;
-            cout << "] Detected '   ', the coming phase should be 'd'." << endl;
+            cout << "[error@" + to_string(stringsub) + "] Detected '   ', the coming phase should be 'd'." << endl;
             exit(0);
         }
     } else {
-        cout << "[error@";
-        cout << stringsub;
-        cout << "] For D, the coming phase should be '  '." << endl;
+        cout << "[error@" + to_string(stringsub) + "] For D, the coming phase should be '  '." << endl;
         exit(0);
     }
 }
@@ -159,21 +135,15 @@ void ParseDhi() {
                         MatchToken('\t');
                         ParseDhi();
                     } else {
-                        cout << "[error@";
-                        cout << stringsub;
-                        cout << "] Detected ';d', the coming phase should be '  '." << endl;
+                        cout << "[error@" + to_string(stringsub) + "] Detected ';d', the coming phase should be '  '." << endl;
                         exit(0);
                     }
                 } else {
-                    cout << "[error@";
-                    cout << stringsub;
-                    cout << "] Detected ';', the coming phase should be 'd'." << endl;
+                    cout << "[error@" + to_string(stringsub) + "] Detected ';', the coming phase should be 'd'." << endl;
                     exit(0);
                 }
             } else {
-                cout << "[error@";
-                cout << stringsub;
-                cout << "] The coming phase should be ';'." << endl;
+                cout << "[error@" + to_string(stringsub) + "] The coming phase should be ';'." << endl;
                 exit(0);
             }
             break;
@@ -182,9 +152,7 @@ void ParseDhi() {
             cout << "D' -> epsilon" << endl;
             break;
         default:
-            cout << "[error@";
-            cout << stringsub;
-            cout << "] For D', the coming phase should be ';' or '  '." << endl;
+            cout << "[error@" + to_string(stringsub) + "] For D', the coming phase should be ';' or '  '." << endl;
             exit(0);
     }
 }
@@ -198,15 +166,11 @@ void ParseS() {
             MatchToken('s');
             ParseShi();
         } else {
-            cout << "[error@";
-            cout << stringsub;
-            cout << "] Detected '   ', the coming phase should be 's'." << endl;
+            cout << "[error@" + to_string(stringsub) + "] Detected '   ', the coming phase should be 's'." << endl;
             exit(0);
         }
     } else {
-        cout << "[error@";
-        cout << stringsub;
-        cout << "] For S, the coming phase should be '  '." << endl;
+        cout << "[error@" + to_string(stringsub) + "] For S, the coming phase should be '  '." << endl;
         exit(0);
     }
 }
@@ -224,21 +188,15 @@ void ParseShi() {
                         MatchToken('\t');
                         ParseShi();
                     } else {
-                        cout << "[error@";
-                        cout << stringsub;
-                        cout << "] Detected ';s', the coming phase should be '  '." << endl;
+                        cout << "[error@" + to_string(stringsub) + "] Detected ';s', the coming phase should be '  '." << endl;
                         exit(0);
                     }
                 } else {
-                    cout << "[error@";
-                    cout << stringsub;
-                    cout << "] Detected ';', the coming phase should be 's'." << endl;
+                    cout << "[error@" + to_string(stringsub) + "] Detected ';', the coming phase should be 's'." << endl;
                     exit(0);
                 }
             } else {
-                cout << "[error@";
-                cout << stringsub;
-                cout << "] For S', the coming phase should be ';'." << endl;
+                cout << "[error@" + to_string(stringsub) + "] For S', the coming phase should be ';'." << endl;
                 exit(0);
             }
             break;
@@ -248,12 +206,9 @@ void ParseShi() {
             break;
         }
         default:
-            cout << "[error@";
-            cout << stringsub;
-            cout << "] For S', the coming phase should be ';' or '  '." << endl;
+            cout << "[error@" + to_string(stringsub) + "] For S', the coming phase should be ';' or '  '." << endl;
             exit(0);
     }
-//    cout << "end of shi" << endl;
 }
 
 int main() {

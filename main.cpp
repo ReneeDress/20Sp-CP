@@ -49,7 +49,6 @@ string getToken() {
         default: {
             if (inchar >= 48 && inchar <= 57) {
                 long value = 0;
-//                cout << inchar << ": " << long(inchar - 48) << endl;
                 value = long(inchar - 48);
                 inchar = getchar();
                 stringsub += 1;
@@ -63,7 +62,6 @@ string getToken() {
                         ungetc(inchar, stdin);
                         stringsub -= 1;
                         currentValue = value;
-//                        cout << to_string(value) << endl;
                         return "number";
                     } else {
                         cout << "[error@" + to_string(stringsub) + "] Illegal coming char after number." << endl;
